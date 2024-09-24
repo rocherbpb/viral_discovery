@@ -137,6 +137,68 @@ diamond blastx --db /scratch/wrbu/databases/diamond/nr --out checkv/${sample}_${
 # Re-formatting for Megan software
 daa-meganizer --in checkv/${sample}_${classifer}/HQ_viruses.daa --classify --mapDB /scratch/wrbu/databases/megan/megan-map-Feb2022.db --threads $NSLOTS --minSupport 1 --minPercentIdentity 40 --maxExpected 1.0E-6 --lcaAlgorithm longReads --lcaCoveragePercent 51 --longReads --readAssignmentMode readCount --propertiesFile /home/bourkeb/megan/MEGAN.vmoptions --only none 
 done
+```
+### Extract reads based on classifications
+```sh
+  echo "+ Starting ${sample}"
+for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
+## Make a classification data folder
+mkdir -p ${sample}_${classifer}/classify_virus/reads
+  ###  
+  # Takes the megan output (.rma) and filters for virus classifications (via CZID_taxonID.list file) and produces a Krona graph
+  ###
+  
+  ## take the diamond alignment outputs and create a classification file
+  daa2info -i ${sample}_${classifer}/HQ_viruses.daa -r2c Taxonomy > ${sample}_${classifer}/classify_virus/${sample}_classify.txt
+  
+  ## This first part cleans the read header names in the "pre-processed" fastq file (and the output is used to make a list of reads names with read lengths
+  seqkit seq -i ${sample}_${classifer}/HQ_viruses.fasta | seqkit fx2tab --length --name --header-line > ${sample}_${classifer}/classify_virus/${sample}_length.txt
+  
+  ## This step adds a column read lengths to the classification file to create a "${sample}_table.txt" file
+  awk -v OFS='\t' 'NR==FNR {a[$1] = $2; next} $1 in a {print $1, $2, a[$1]}' ${sample}_${classifer}/classify_virus/${sample}_length.txt ${sample}_${classifer}/classify_virus/${sample}_classify.txt > ${sample}_${classifer}/classify_virus/${sample}_table.txt
+  
+  ## This step filters the "${sample}_table.txt" file based on a virus TaxonID list creating a virus classification table file. These last three lines of code could be merged into one.
+  awk 'NR == FNR {a[$1]; next} $2 in a {print}' Virus_TaxonID.list ${sample}_${classifer}/classify_virus/${sample}_table.txt > ${sample}_${classifer}/classify_virus/${sample}_virus.txt
+  
+  ## make a krona graph of the virus classification table
+  ktImportTaxonomy -q 1 -t 2 -s 0 ${sample}_${classifer}/classify_virus/${sample}_virus.txt -o ${sample}_${classifer}/classify_virus/${sample}_virus.html
+
+
+  ###
+  # Creates a table of virus species names and associated fasta read names
+  ###
+  
+  awk '{print $2}' ${sample}_${classifer}/classify_virus/${sample}_virus.txt \
+    | taxonkit lineage -r -L --data-dir /home/bourkeb/TaxonKit\
+    | taxonkit reformat -I 1 -F -S -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" --data-dir /home/bourkeb/TaxonKit\
+    | cut -f 9 \
+    | csvtk add-header -t -n "species" \
+    | csvtk pretty -t | tail -n+3 | paste ${sample}_${classifer}/classify_virus/${sample}_virus.txt - | cut -f1,4 > ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt 
+   sed -i -e 's/ /_/g' -e 's/\//_/g' ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt  
+
+
+  ###
+  # Splits the previous file by virus species name
+  ###
+
+  for x in $(awk {'print $2'} ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | sort -u); do
+    egrep "[[:space:]]${x}$" ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | awk {'print $1'} > ${sample}_${classifer}/classify_virus/reads/${sample}_${x}.txt
+    echo "reads/\"${sample}_${x}.txt\" created"
+  done
+
+
+  ###
+  # Uses the previous file to pre-processed fasta files to pull out the read names for each virus file
+  ###
+    for x in ${sample}_${classifer}/classify_virus/reads/${sample}_*.txt; do
+      BASE=$(basename $x .txt)
+      seqtk subseq ${sample}_${classifer}/HQ_viruses.fasta ${x} > ${sample}_${classifer}/classify_virus/reads/${BASE}.fasta
+    done
+
+  echo "- Ending ${sample}_${classifer}"
+  echo
+  echo
+done
 #
 done
 ```
