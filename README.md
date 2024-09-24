@@ -129,7 +129,7 @@ cat checkv/${sample}_DeepMicroClassProkV/viruses.fna | seqkit grep -f checkv/${s
 
 ### Taxonomically classify high-quality/complete viral sequences
 ```sh
-for classifer in $(cat classifier.list); do
+for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 # Diamond read classification
 diamond blastx --db /scratch/wrbu/databases/diamond/nr --out checkv/${sample}_${classifer}/HQ_viruses --outfmt 100 \
 -q checkv/${sample}_${classifer}/HQ_viruses.fasta \
