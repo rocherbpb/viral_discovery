@@ -91,3 +91,17 @@ rnavSpades/${sample}/contigs_1000.fasta \
 ```sh
 cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
 ```
+### Viral classification of sequences
+#### DeepMicroClass analysis and extract Eukaryotw and Prokaryote Viruses
+```sh
+DeepMicroClass predict -i de_novo_merge/${sample}_CD_HIT_c95.fasta -o DeepMicroClass/${sample}
+DeepMicroClass extract --tsv DeepMicroClass/${sample}/${sample}_CD_HIT_c95.fasta_pred_one-hot_hybrid.tsv --fasta de_novo_merge/${sample}_CD_HIT_c95.fasta  --class EukaryoteVirus --output DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta
+DeepMicroClass extract --tsv DeepMicroClass/${sample}/${sample}_CD_HIT_c95.fasta_pred_one-hot_hybrid.tsv --fasta de_novo_merge/${sample}_CD_HIT_c95.fasta  --class ProkaryoteVirus --output DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta
+```
+#### GeNomad analysis
+```sh
+genomad end-to-end --cleanup --conservative --threads $NSLOTS de_novo_merge/${sample}_CD_HIT_c95.fasta genomad/conserve/${sample} /scratch/wrbu/databases/genomad_db
+```
+
+
+
