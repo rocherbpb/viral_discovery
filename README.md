@@ -72,7 +72,7 @@ seqkit seq -m 1000 rnavSpades/${sample}/contigs.fasta > rnavSpades/${sample}/con
 ```sh
 cat trinity/${sample}_trinity.Trinity.fasta megahit/kneaddata/${sample}/final.contigs.fa spades/${sample}/contigs_1000.fasta > de_novo_merge/${sample}_merge.fasta
 ```
-#### Finding representative sequences using CD Hit
+#### Cluster contigs from all assemblies and select one representative from each cluster using CD Hit
 ```sh
 cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
 ```
