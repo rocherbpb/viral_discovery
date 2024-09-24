@@ -21,7 +21,6 @@ gzip kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq
 gzip kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq
 rm kneaddata/${sample}/*.fastq
 #
-done
 ```
 
 ### De-novo assembly using five assemblers
