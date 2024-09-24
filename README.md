@@ -1,4 +1,4 @@
-## Raw data adaptor trimmed and quality filtered 
+### Raw data adaptor trimmed and quality filtered 
 ```sh
 BASE_DIR=/path/to/fastq/input/directory
 HOST_GEN=/path/to/Host/genome/bowtie/ref/db
