@@ -55,7 +55,7 @@ spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fast
 --pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --rnaviral -o rnavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
 ```
-#### Clean sequence headers and limit sequence length to >1000bp
+### Clean sequence headers and limit sequence length to >1000bp
 ```sh
 # Trinity
 seqkit seq -i trinity/${sample}_trinity.Trinity.fasta | seqkit seq -m 1000 > trinity/${sample}_trinity_1000.Trinity.fasta
