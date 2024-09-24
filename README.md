@@ -76,7 +76,8 @@ seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'metavSpades_${1}' metavSpades/$
 ```sh
 seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'rnavSpades_${1}' rnavSpades/${sample}/contigs.fasta | seqkit seq -m 1000 > rnavSpades/${sample}/contigs_1000.fasta
 ```
-#### Concatenate contigs from all five assemblers
+### Concatenate assemblies, cluster and select longest representative
+#### Concatenate
 ```sh
 cat \
 trinity/${sample}_trinity_1000.Trinity.fasta \
@@ -86,7 +87,7 @@ metavSpades/${sample}/contigs_1000.fasta \
 rnavSpades/${sample}/contigs_1000.fasta \
 > de_novo_merge/${sample}_merge.fasta
 ```
-#### Cluster contigs from all assemblies and select one representative from each cluster using CD Hit
+#### Cluster and sequence selection using CD Hit
 ```sh
 cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
 ```
