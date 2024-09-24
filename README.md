@@ -23,3 +23,26 @@ rm kneaddata/${sample}/*.fastq
 #
 done
 ```
+
+### de-novo assembly using five assemblers
+#### Megahit Assembly with min contigs of 1000 bp
+megahit -1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
+-2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
+-o megahit/${sample} -t $NSLOTS --min-contig-len 1000
+#### Trinity Assembly with min contigs of 1000 bp
+Trinity --seqType fq \
+--left kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
+--right kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
+--CPU $NSLOTS --max_memory 760G --output trinity/${sample}_trinity --min_contig_length 1000
+#### Spades Assembly
+conda activate Spades
+spades.py --pe1-1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
+--pe1-2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
+--meta -o spades/${sample} --threads $NSLOTS --memory 990 --only-assembler
+conda deactivate
+##### Filter Spades assembly for >1000 bp contigs
+seqkit seq -m 1000 spades/${sample}/contigs.fasta > spades/${sample}/contigs_1000.fasta
+#### Concatenate contigs from the three assemblers
+cat trinity/${sample}_trinity.Trinity.fasta megahit/kneaddata/${sample}/final.contigs.fa spades/${sample}/contigs_1000.fasta > de_novo_merge/${sample}_merge.fasta
+#### Finding representative sequences using CD Hit
+cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
