@@ -37,7 +37,7 @@ Trinity --seqType fq \
 --right kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --CPU $NSLOTS --max_memory 760G --output trinity/${sample}_trinity --min_contig_length 1000
 ```
-#### Meta-Spades Assembly
+#### Meta-Spades Assembly NB this is a long and extremely demanding assembly, consider assemnling seperately
 ```sh
 spades.py --pe1-1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
 --pe1-2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
