@@ -38,15 +38,35 @@ Trinity --seqType fq \
 --right kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --CPU $NSLOTS --max_memory 760G --output trinity/${sample}_trinity --min_contig_length 1000
 ```
-#### Spades Assembly
+#### Meta-Spades Assembly
 ```sh
 spades.py --pe1-1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
 --pe1-2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --meta -o spades/${sample} --threads $NSLOTS --memory 990 --only-assembler
 ```
-##### Filter Spades assembly for >1000 bp contigs
+###### Filter Meta-Spades assembly for >1000 bp contigs
 ```sh
 seqkit seq -m 1000 spades/${sample}/contigs.fasta > spades/${sample}/contigs_1000.fasta
+```
+#### Meta-Viral-Spades Assembly
+```sh
+spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fastq.gz \
+--pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
+--metaviral -o metavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
+```
+###### Filter Meta-Viral-Spades assembly for >1000 bp contigs
+```sh
+seqkit seq -m 1000 metavSpades/${sample}/contigs.fasta > metavSpades/${sample}/contigs_1000.fasta
+```
+#### RNA-Viral-Spades Assembly
+```sh
+spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fastq.gz \
+--pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
+--rnaviral -o rnavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
+```
+###### Filter RNA-Viral-Spades assembly for >1000 bp contigs
+```sh
+seqkit seq -m 1000 rnavSpades/${sample}/contigs.fasta > rnavSpades/${sample}/contigs_1000.fasta
 ```
 #### Concatenate contigs from the three assemblers
 ```sh
