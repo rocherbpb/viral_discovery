@@ -43,19 +43,11 @@ spades.py --pe1-1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
 --pe1-2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --meta -o spades/${sample} --threads $NSLOTS --memory 990 --only-assembler
 ```
-###### Filter Meta-Spades assembly for >1000 bp contigs
-```sh
-seqkit seq -m 1000 spades/${sample}/contigs.fasta > spades/${sample}/contigs_1000.fasta
-```
 #### Meta-Viral-Spades Assembly
 ```sh
 spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fastq.gz \
 --pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --metaviral -o metavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
-```
-###### Filter Meta-Viral-Spades assembly for >1000 bp contigs
-```sh
-seqkit seq -m 1000 metavSpades/${sample}/contigs.fasta > metavSpades/${sample}/contigs_1000.fasta
 ```
 #### RNA-Viral-Spades Assembly
 ```sh
@@ -63,13 +55,36 @@ spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fast
 --pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --rnaviral -o rnavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
 ```
-###### Filter RNA-Viral-Spades assembly for >1000 bp contigs
+#### Clean sequence headers and limit sequence length to >1000bp
 ```sh
-seqkit seq -m 1000 rnavSpades/${sample}/contigs.fasta > rnavSpades/${sample}/contigs_1000.fasta
+# Trinity
+seqkit seq -i trinity/${sample}_trinity.Trinity.fasta | seqkit seq -m 1000 > trinity/${sample}_trinity_1000.Trinity.fasta
 ```
-#### Concatenate contigs from the three assemblers
+# Megahit
 ```sh
-cat trinity/${sample}_trinity.Trinity.fasta megahit/kneaddata/${sample}/final.contigs.fa spades/${sample}/contigs_1000.fasta > de_novo_merge/${sample}_merge.fasta
+seqkit seq -i megahit/kneaddata/${sample}/final.contigs.fa | seqkit replace -p '(.+)' -r 'megahit_${1}' | seqkit seq -m 1000 > megahit/kneaddata/${sample}/final_1000.contigs.fasta
+```
+# Meta-Spades
+```sh
+seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'Spades_${1}' spades/${sample}/contigs.fasta | seqkit seq -m 1000 > spades/${sample}/contigs_1000.fasta
+```
+# Meta-Viral-Spades
+```sh
+seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'metavSpades_${1}' metavSpades/${sample}/contigs.fasta | seqkit seq -m 1000 > metavSpades/${sample}/contigs_1000.fasta
+```
+# RNA-Viral-Spades
+```sh
+seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'rnavSpades_${1}' rnavSpades/${sample}/contigs.fasta | seqkit seq -m 1000 > rnavSpades/${sample}/contigs_1000.fasta
+```
+#### Concatenate contigs from all five assemblers
+```sh
+cat \
+trinity/${sample}_trinity_1000.Trinity.fasta \
+megahit/kneaddata/${sample}/final_1000.contigs.fasta \
+spades/${sample}/contigs_1000.fasta \
+metavSpades/${sample}/contigs_1000.fasta \
+rnavSpades/${sample}/contigs_1000.fasta \
+> de_novo_merge/${sample}_merge.fasta
 ```
 #### Cluster contigs from all assemblies and select one representative from each cluster using CD Hit
 ```sh
