@@ -129,13 +129,11 @@ cat checkv/${sample}_DeepMicroClassProkV/viruses.fna | seqkit grep -f checkv/${s
 
 ### Taxonomically classify high-quality/complete viral sequences
 ```sh
-for classifer in $(cat classifier.list)
-do
+for classifer in $(cat classifier.list); do
 # Diamond read classification
 diamond blastx --db /scratch/wrbu/databases/diamond/nr --out checkv/${sample}_${classifer}/HQ_viruses --outfmt 100 \
 -q checkv/${sample}_${classifer}/HQ_viruses.fasta \
 --threads $NSLOTS -b20 --evalue 1e-6 -F 15 --range-culling --top 10
-#
 # Re-formatting for Megan software
 daa-meganizer --in checkv/${sample}_${classifer}/HQ_viruses.daa --classify --mapDB /scratch/wrbu/databases/megan/megan-map-Feb2022.db --threads $NSLOTS --minSupport 1 --minPercentIdentity 40 --maxExpected 1.0E-6 --lcaAlgorithm longReads --lcaCoveragePercent 51 --longReads --readAssignmentMode readCount --propertiesFile /home/bourkeb/megan/MEGAN.vmoptions --only none 
 done
