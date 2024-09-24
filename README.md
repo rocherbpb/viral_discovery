@@ -24,7 +24,7 @@ rm kneaddata/${sample}/*.fastq
 done
 ```
 
-### de-novo assembly using five assemblers
+### De-novo assembly using five assemblers
 #### Megahit Assembly with min contigs of 1000 bp
 ```sh
 megahit -1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
