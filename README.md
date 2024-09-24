@@ -1,3 +1,5 @@
+
+```sh
 BASE_DIR=/path/to/fastq/input/directory
 HOST_GEN=/path/to/Host/genome/bowtie/ref/db
 #
@@ -20,3 +22,4 @@ gzip kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq
 rm kneaddata/${sample}/*.fastq
 #
 done
+```
