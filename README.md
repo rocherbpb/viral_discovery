@@ -155,10 +155,6 @@ mkdir -p ${sample}_${classifer}/classify_virus/reads
   
   ## This step filters the "${sample}_table.txt" file based on a virus TaxonID list creating a virus classification table file. These last three lines of code could be merged into one.
   awk 'NR == FNR {a[$1]; next} $2 in a {print}' Virus_TaxonID.list ${sample}_${classifer}/classify_virus/${sample}_table.txt > ${sample}_${classifer}/classify_virus/${sample}_virus.txt
-  
-  ## make a krona graph of the virus classification table
-  ktImportTaxonomy -q 1 -t 2 -s 0 ${sample}_${classifer}/classify_virus/${sample}_virus.txt -o ${sample}_${classifer}/classify_virus/${sample}_virus.html
-
 
   ###
   # Creates a table of virus species names and associated fasta read names
