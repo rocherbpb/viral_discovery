@@ -92,7 +92,7 @@ rnavSpades/${sample}/contigs_1000.fasta \
 cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
 ```
 ### Viral classification of sequences
-#### DeepMicroClass analysis and extract Eukaryotw and Prokaryote Viruses
+#### DeepMicroClass analysis and extract Eukaryote and Prokaryote Viruses
 ```sh
 DeepMicroClass predict -i de_novo_merge/${sample}_CD_HIT_c95.fasta -o DeepMicroClass/${sample}
 DeepMicroClass extract --tsv DeepMicroClass/${sample}/${sample}_CD_HIT_c95.fasta_pred_one-hot_hybrid.tsv --fasta de_novo_merge/${sample}_CD_HIT_c95.fasta  --class EukaryoteVirus --output DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta
@@ -123,10 +123,6 @@ cat checkv/${sample}_DeepMicroClassEukV/viruses.fna | seqkit grep -f checkv/${sa
 grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassProkV/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID
 cat checkv/${sample}_DeepMicroClassProkV/viruses.fna | seqkit grep -f checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.fasta
 ```
-
-
-
-
 ### Taxonomically classify high-quality/complete viral sequences
 ```sh
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
