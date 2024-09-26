@@ -113,15 +113,16 @@ done
 ```
 ### Check quality
 ```sh
-checkv end_to_end genomad/conserve/${sample}/${sample}_CD_HIT_c95_summary/${sample}_DeepMicroClass_rem.fasta checkv/${sample}_genomad -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
-checkv end_to_end DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta checkv/${sample}_DeepMicroClassEukV -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
-checkv end_to_end DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta checkv/${sample}_DeepMicroClassProkV -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
-```
-#### Extract high-quality or complete viral sequences
-```sh
 for sample in $(cat sample_name.list); do
 #
 #### checkv analysis
+checkv end_to_end genomad/conserve/${sample}/${sample}_CD_HIT_c95_summary/${sample}_DeepMicroClass_rem.fasta checkv/${sample}_genomad -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
+checkv end_to_end DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta checkv/${sample}_DeepMicroClassEukV -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
+checkv end_to_end DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta checkv/${sample}_DeepMicroClassProkV -d /scratch/wrbu/databases/checkv/checkv-db-v1.5 -t $NSLOTS
+#
+#### Extract high-quality or complete viral sequences
+for sample in $(cat sample_name.list); do
+#
 grep -e "High-quality" -e "Complete" checkv/${sample}_genomad/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_genomad/HQ_viruses.ID
 cat checkv/${sample}_genomad/viruses.fna | seqkit grep -f checkv/${sample}_genomad/HQ_viruses.ID > checkv/${sample}_genomad/HQ_viruses.fasta
 grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassEukV/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_DeepMicroClassEukV/HQ_viruses.ID
