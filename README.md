@@ -20,6 +20,7 @@ kneaddata -i fastp/${sample}.R1.fastq.gz -i fastp/${sample}.R2.fastq.gz \
 gzip kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq
 gzip kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq
 rm kneaddata/${sample}/*.fastq
+done
 #
 ```
 
