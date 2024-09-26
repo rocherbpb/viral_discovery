@@ -127,8 +127,12 @@ grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassEukV/quality
 cat checkv/${sample}_DeepMicroClassEukV/viruses.fna | seqkit grep -f checkv/${sample}_DeepMicroClassEukV/HQ_viruses.ID > checkv/${sample}_DeepMicroClassEukV/HQ_viruses.fasta
 grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassProkV/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID
 cat checkv/${sample}_DeepMicroClassProkV/viruses.fna | seqkit grep -f checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.fasta
-#
+done
+```
 ### Taxonomically classify high-quality/complete viral sequences
+```sh
+for sample in $(cat sample_name.list); do
+#
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 # Diamond read classification
 diamond blastx --db /scratch/wrbu/databases/diamond/nr --out checkv/${sample}_${classifer}/HQ_viruses --outfmt 100 \
