@@ -94,6 +94,8 @@ done
 ```
 ### Viral classification of sequences
 ```sh
+genomad_db=/path/to/genomad/db
+#
 for sample in $(cat sample_name.list); do
 #
 #### DeepMicroClass analysis and extract Eukaryote and Prokaryote Viruses
@@ -102,7 +104,7 @@ DeepMicroClass extract --tsv DeepMicroClass/${sample}/${sample}_CD_HIT_c95.fasta
 DeepMicroClass extract --tsv DeepMicroClass/${sample}/${sample}_CD_HIT_c95.fasta_pred_one-hot_hybrid.tsv --fasta de_novo_merge/${sample}_CD_HIT_c95.fasta  --class ProkaryoteVirus --output DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta
 #
 #### GeNomad analysis with conservative classification setting
-genomad end-to-end --cleanup --conservative --threads $NSLOTS de_novo_merge/${sample}_CD_HIT_c95.fasta genomad/${sample} /scratch/wrbu/databases/genomad_db
+genomad end-to-end --cleanup --conservative --threads $NSLOTS de_novo_merge/${sample}_CD_HIT_c95.fasta genomad/${sample} ${genomad_db}
 #
 #### Drop GeNomad viral sequences already present in DeepMicroClass classifications
 cat DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta | seqkit seq -n -i > DeepMicroClass/${sample}/${sample}_DeepMicroClass_Virus.ID
