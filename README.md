@@ -147,6 +147,8 @@ done
 ```
 ### Extract reads based on classifications
 ```sh
+for sample in $(cat sample_name.list); do
+#
   echo "+ Starting ${sample}"
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 ## Make a classification data folder
