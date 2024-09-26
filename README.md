@@ -57,6 +57,8 @@ done
 ```
 ### Clean sequence headers from assemblies and limit sequence length to >1000bp
 ```sh
+for sample in $(cat sample_name.list); do
+#
 #### Trinity
 seqkit seq -i trinity/${sample}_trinity.Trinity.fasta | seqkit seq -m 1000 > trinity/${sample}_trinity_1000.Trinity.fasta
 #
@@ -71,6 +73,7 @@ seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'metavSpades_${1}' metavSpades/$
 #
 #### RNA-Viral-Spades
 seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'rnavSpades_${1}' rnavSpades/${sample}/contigs.fasta | seqkit seq -m 1000 > rnavSpades/${sample}/contigs_1000.fasta
+done
 ```
 ### Concatenate assemblies, cluster and select longest representative
 #### Concatenate
