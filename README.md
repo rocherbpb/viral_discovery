@@ -76,8 +76,10 @@ seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'rnavSpades_${1}' rnavSpades/${s
 done
 ```
 ### Concatenate assemblies, cluster and select longest representative
-#### Concatenate
 ```sh
+for sample in $(cat sample_name.list); do
+#
+#### Concatenate
 cat \
 trinity/${sample}_trinity_1000.Trinity.fasta \
 megahit/kneaddata/${sample}/final_1000.contigs.fasta \
@@ -85,10 +87,10 @@ spades/${sample}/contigs_1000.fasta \
 metavSpades/${sample}/contigs_1000.fasta \
 rnavSpades/${sample}/contigs_1000.fasta \
 > de_novo_merge/${sample}_merge.fasta
-```
+#
 #### Cluster and sequence selection using CD Hit
-```sh
 cd-hit-est -i de_novo_merge/${sample}_merge.fasta -o de_novo_merge/${sample}_CD_HIT_c95.fasta -c 0.95 -n 10 -d 0 -M 0 -T $NSLOTS
+done
 ```
 ### Viral classification of sequences
 #### DeepMicroClass analysis and extract Eukaryote and Prokaryote Viruses
