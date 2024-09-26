@@ -119,22 +119,27 @@ checkv end_to_end DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta check
 ```
 #### Extract high-quality or complete viral sequences
 ```sh
+for sample in $(cat sample_name.list); do
+#
+#### checkv analysis
 grep -e "High-quality" -e "Complete" checkv/${sample}_genomad/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_genomad/HQ_viruses.ID
 cat checkv/${sample}_genomad/viruses.fna | seqkit grep -f checkv/${sample}_genomad/HQ_viruses.ID > checkv/${sample}_genomad/HQ_viruses.fasta
 grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassEukV/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_DeepMicroClassEukV/HQ_viruses.ID
 cat checkv/${sample}_DeepMicroClassEukV/viruses.fna | seqkit grep -f checkv/${sample}_DeepMicroClassEukV/HQ_viruses.ID > checkv/${sample}_DeepMicroClassEukV/HQ_viruses.fasta
 grep -e "High-quality" -e "Complete" checkv/${sample}_DeepMicroClassProkV/quality_summary.tsv | awk '{print $1}' > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID
 cat checkv/${sample}_DeepMicroClassProkV/viruses.fna | seqkit grep -f checkv/${sample}_DeepMicroClassProkV/HQ_viruses.ID > checkv/${sample}_DeepMicroClassProkV/HQ_viruses.fasta
-```
+#
 ### Taxonomically classify high-quality/complete viral sequences
-```sh
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 # Diamond read classification
 diamond blastx --db /scratch/wrbu/databases/diamond/nr --out checkv/${sample}_${classifer}/HQ_viruses --outfmt 100 \
 -q checkv/${sample}_${classifer}/HQ_viruses.fasta \
 --threads $NSLOTS -b20 --evalue 1e-6 -F 15 --range-culling --top 10
 # Re-formatting for Megan software
-daa-meganizer --in checkv/${sample}_${classifer}/HQ_viruses.daa --classify --mapDB /scratch/wrbu/databases/megan/megan-map-Feb2022.db --threads $NSLOTS --minSupport 1 --minPercentIdentity 40 --maxExpected 1.0E-6 --lcaAlgorithm longReads --lcaCoveragePercent 51 --longReads --readAssignmentMode readCount --propertiesFile /home/bourkeb/megan/MEGAN.vmoptions --only none 
+daa-meganizer --in checkv/${sample}_${classifer}/HQ_viruses.daa --classify --mapDB /scratch/wrbu/databases/megan/megan-map-Feb2022.db --threads $NSLOTS --minSupport 1 --minPercentIdentity 40 --maxExpected 1.0E-6 --lcaAlgorithm longReads --lcaCoveragePercent 51 --longReads --readAssignmentMode readCount --propertiesFile /home/bourkeb/megan/MEGAN.vmoptions --only none
+#
+done
+#
 done
 ```
 ### Extract reads based on classifications
