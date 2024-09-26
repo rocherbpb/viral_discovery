@@ -27,6 +27,8 @@ done
 ### De-novo assembly using five assemblers
 #### Megahit Assembly with min contigs of 1000 bp
 ```sh
+for sample in $(cat sample_name.list); do
+#
 megahit -1 kneaddata/${sample}/${sample}.R1_kneaddata_paired_1.fastq.gz \
 -2 kneaddata/${sample}/${sample}.R1_kneaddata_paired_2.fastq.gz \
 -o megahit/${sample} -t $NSLOTS --min-contig-len 1000
@@ -55,6 +57,7 @@ spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fast
 spades.py --pe1-1 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_1.fastq.gz \
 --pe1-2 kneaddata/${sample}_clean/${sample}.R1_kneaddata_paired_2.fastq.gz \
 --rnaviral -o rnavSpades/${sample} --threads $NSLOTS --memory 990 --only-assembler
+done
 ```
 ### Clean sequence headers and limit sequence length to >1000bp
 #### Trinity
