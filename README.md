@@ -79,6 +79,8 @@ done
 ```
 ### Concatenate assemblies, cluster and select longest representative
 ```sh
+mkdir de_novo_merge
+#
 for sample in $(cat sample_name.list); do
 #
 #### Concatenate
