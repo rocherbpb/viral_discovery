@@ -26,6 +26,9 @@ done
 
 ### De-novo assembly using five assemblers
 ```sh
+#
+mkdir megahit trinity spades metavSpades rnavSpades
+#
 for sample in $(cat sample_name.list); do
 #
 #### Megahit Assembly with min contigs of 1000 bp
