@@ -65,7 +65,7 @@ for sample in $(cat sample_name.list); do
 seqkit seq -i trinity/${sample}_trinity.Trinity.fasta | seqkit seq -m 1000 > trinity/${sample}_trinity_1000.Trinity.fasta
 #
 #### Megahit
-seqkit seq -i megahit/kneaddata/${sample}/final.contigs.fa | seqkit replace -p '(.+)' -r 'megahit_${1}' | seqkit seq -m 1000 > megahit/kneaddata/${sample}/final_1000.contigs.fasta
+seqkit seq -i megahit/${sample}/final.contigs.fa | seqkit replace -p '(.+)' -r 'megahit_${1}' | seqkit seq -m 1000 > megahit/kneaddata/${sample}/final_1000.contigs.fasta
 #
 #### Meta-Spades
 seqkit replace -p '(NODE_\d+_length_\d+)_.+' -r 'Spades_${1}' spades/${sample}/contigs.fasta | seqkit seq -m 1000 > spades/${sample}/contigs_1000.fasta
@@ -86,7 +86,7 @@ for sample in $(cat sample_name.list); do
 #### Concatenate
 cat \
 trinity/${sample}_trinity_1000.Trinity.fasta \
-megahit/kneaddata/${sample}/final_1000.contigs.fasta \
+megahit/${sample}/final_1000.contigs.fasta \
 spades/${sample}/contigs_1000.fasta \
 metavSpades/${sample}/contigs_1000.fasta \
 rnavSpades/${sample}/contigs_1000.fasta \
