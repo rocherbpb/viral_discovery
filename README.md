@@ -124,7 +124,7 @@ checkv_db=/path/to/checkv/db
 for sample in $(cat sample_name.list); do
 #
 #### checkv analysis
-checkv end_to_end genomad/conserve/${sample}/${sample}_CD_HIT_c95_summary/${sample}_DeepMicroClass_rem.fasta checkv/${sample}_genomad -d ${checkv} -t $NSLOTS
+checkv end_to_end genomad/${sample}/${sample}_CD_HIT_c95_summary/${sample}_DeepMicroClass_rem.fasta checkv/${sample}_genomad -d ${checkv} -t $NSLOTS
 checkv end_to_end DeepMicroClass/${sample}/${sample}_EukaryoteVirus.fasta checkv/${sample}_DeepMicroClassEukV -d ${checkv} -t $NSLOTS
 checkv end_to_end DeepMicroClass/${sample}/${sample}_ProkaryoteVirus.fasta checkv/${sample}_DeepMicroClassProkV -d ${checkv} -t $NSLOTS
 #
