@@ -165,7 +165,7 @@ for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 ## Make a classification data folder
 mkdir -p ${sample}_${classifer}/classify_virus/reads
   ###  
-  # Takes the megan output (.rma) and filters for virus classifications (via CZID_taxonID.list file) and produces a Krona graph
+  # Takes the megan output (.rma) and filters for virus classifications (via taxonID.list file)
   ###
   
   ## take the diamond alignment outputs and create a classification file
