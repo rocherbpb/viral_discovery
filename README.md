@@ -225,7 +225,7 @@ done
 ```sh
 for sample in $(cat sample_name.list); do
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
-for sample in $(ls ${sample}_${classifer}/classify_virus/reads/${sample}_*.fasta | xargs basename -a | sed -e 's/\.fasta$//'); do
+for file in $(ls ${sample}_${classifer}/classify_virus/reads/${sample}_*.fasta | xargs basename -a | sed -e 's/\.fasta$//'); do
 prokka ${sample}_${classifer}/classify_virus/reads/${file}.fasta --outdir ${sample}_${classifer}/classify_virus/reads/${file}_prokka --kingdom Viruses
 done
 done
