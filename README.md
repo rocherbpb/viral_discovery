@@ -11,7 +11,7 @@ fastp -i ${BASE_DIR}/${sample}_R1_001.fastq.gz \
 -I ${BASE_DIR}/${sample}_R2_001.fastq.gz \
 -o fastp/${sample}.R1.fastq.gz \
 -O fastp/${sample}.R2.fastq.gz \
---thread $NSLOTS --low_complexity_filter
+--thread $NSLOTS --dedup --low_complexity_filter
 #
 kneaddata -i fastp/${sample}.R1.fastq.gz -i fastp/${sample}.R2.fastq.gz \
 -db ${HOST_GEN} \
