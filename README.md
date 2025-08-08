@@ -185,7 +185,7 @@ mkdir -p checkv/${sample}_${classifer}/classify_virus/reads
   ###
   
   awk '{print $2}' checkv/${sample}_${classifer}/classify_virus/${sample}_virus.txt \
-    | taxonkit lineage -r -L --data-dir /home/bourkeb/TaxonKit\
+    | taxonkit lineage -r -L \
     | taxonkit reformat -I 1 -F -S -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" \
     | cut -f 9 \
     | csvtk add-header -t -n "species" \
