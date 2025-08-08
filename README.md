@@ -163,42 +163,42 @@ for sample in $(cat sample_name.list); do
   echo "+ Starting ${sample}"
 for classifer in DeepMicroClassEukV DeepMicroClassProkV genomad; do
 ## Make a classification data folder
-mkdir -p ${sample}_${classifer}/classify_virus/reads
+mkdir -p checkv/${sample}_${classifer}/classify_virus/reads
   ###  
   # Takes the megan output (.rma) and filters for virus classifications (via taxonID.list file)
   ###
   
   ## take the diamond alignment outputs and create a classification file
-  daa2info -i ${sample}_${classifer}/HQ_viruses.daa -r2c Taxonomy > ${sample}_${classifer}/classify_virus/${sample}_classify.txt
+  daa2info -i checkv/${sample}_${classifer}/HQ_viruses.daa -r2c Taxonomy > checkv/${sample}_${classifer}/classify_virus/${sample}_classify.txt
   
   ## This first part cleans the read header names in the "pre-processed" fastq file (and the output is used to make a list of reads names with read lengths
-  seqkit seq -i ${sample}_${classifer}/HQ_viruses.fasta | seqkit fx2tab --length --name --header-line > ${sample}_${classifer}/classify_virus/${sample}_length.txt
+  seqkit seq -i checkv/${sample}_${classifer}/HQ_viruses.fasta | seqkit fx2tab --length --name --header-line > checkv/${sample}_${classifer}/classify_virus/${sample}_length.txt
   
   ## This step adds a column read lengths to the classification file to create a "${sample}_table.txt" file
-  awk -v OFS='\t' 'NR==FNR {a[$1] = $2; next} $1 in a {print $1, $2, a[$1]}' ${sample}_${classifer}/classify_virus/${sample}_length.txt ${sample}_${classifer}/classify_virus/${sample}_classify.txt > ${sample}_${classifer}/classify_virus/${sample}_table.txt
+  awk -v OFS='\t' 'NR==FNR {a[$1] = $2; next} $1 in a {print $1, $2, a[$1]}' checkv/${sample}_${classifer}/classify_virus/${sample}_length.txt checkv/${sample}_${classifer}/classify_virus/${sample}_classify.txt > checkv/${sample}_${classifer}/classify_virus/${sample}_table.txt
   
   ## This step filters the "${sample}_table.txt" file based on a virus TaxonID list creating a virus classification table file. These last three lines of code could be merged into one.
-  awk 'NR == FNR {a[$1]; next} $2 in a {print}' Virus_TaxonID.list ${sample}_${classifer}/classify_virus/${sample}_table.txt > ${sample}_${classifer}/classify_virus/${sample}_virus.txt
+  awk 'NR == FNR {a[$1]; next} $2 in a {print}' Virus_TaxonID.list checkv/${sample}_${classifer}/classify_virus/${sample}_table.txt > checkv/${sample}_${classifer}/classify_virus/${sample}_virus.txt
 
   ###
   # Creates a table of virus species names and associated fasta read names
   ###
   
-  awk '{print $2}' ${sample}_${classifer}/classify_virus/${sample}_virus.txt \
+  awk '{print $2}' checkv/${sample}_${classifer}/classify_virus/${sample}_virus.txt \
     | taxonkit lineage -r -L --data-dir /home/bourkeb/TaxonKit\
-    | taxonkit reformat -I 1 -F -S -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" --data-dir /home/bourkeb/TaxonKit\
+    | taxonkit reformat -I 1 -F -S -f "{k}\t{p}\t{c}\t{o}\t{f}\t{g}\t{s}\t{t}" \
     | cut -f 9 \
     | csvtk add-header -t -n "species" \
-    | csvtk pretty -t | tail -n+3 | paste ${sample}_${classifer}/classify_virus/${sample}_virus.txt - | cut -f1,4 > ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt 
-   sed -i -e 's/ /_/g' -e 's/\//_/g' ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt  
+    | csvtk pretty -t | tail -n+3 | paste checkv/${sample}_${classifer}/classify_virus/${sample}_virus.txt - | cut -f1,4 > checkv/${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt 
+   sed -i -e 's/ /_/g' -e 's/\//_/g' checkv/${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt  
 
 
   ###
   # Splits the previous file by virus species name
   ###
 
-  for x in $(awk {'print $2'} ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | sort -u); do
-    egrep "[[:space:]]${x}$" ${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | awk {'print $1'} > ${sample}_${classifer}/classify_virus/reads/${sample}_${x}.txt
+  for x in $(awk {'print $2'} checkv/${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | sort -u); do
+    egrep "[[:space:]]${x}$" checkv/${sample}_${classifer}/classify_virus/${sample}_virus_reads.txt | awk {'print $1'} > checkv/${sample}_${classifer}/classify_virus/reads/${sample}_${x}.txt
     echo "reads/\"${sample}_${x}.txt\" created"
   done
 
@@ -206,9 +206,9 @@ mkdir -p ${sample}_${classifer}/classify_virus/reads
   ###
   # Uses the previous file to pre-processed fasta files to pull out the read names for each virus file
   ###
-    for x in ${sample}_${classifer}/classify_virus/reads/${sample}_*.txt; do
+    for x in checkv/${sample}_${classifer}/classify_virus/reads/${sample}_*.txt; do
       BASE=$(basename $x .txt)
-      seqtk subseq ${sample}_${classifer}/HQ_viruses.fasta ${x} > ${sample}_${classifer}/classify_virus/reads/${BASE}.fasta
+      seqtk subseq checkv/${sample}_${classifer}/HQ_viruses.fasta ${x} > checkv/${sample}_${classifer}/classify_virus/reads/${BASE}.fasta
     done
 
   echo "- Ending ${sample}_${classifer}"
